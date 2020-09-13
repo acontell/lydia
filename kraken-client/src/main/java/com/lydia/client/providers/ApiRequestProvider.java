@@ -2,8 +2,8 @@ package com.lydia.client.providers;
 
 import com.lydia.client.model.request.Request;
 import com.lydia.client.properties.KrakenApiProperties;
-import com.lydia.client.resolvers.PostDataResolver;
-import lombok.SneakyThrows;
+import com.lydia.client.resolvers.NonceResolver;
+import com.lydia.client.resolvers.SignedMessageResolver;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
@@ -11,16 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import javax.crypto.Mac;
 import java.net.URI;
-import java.security.NoSuchAlgorithmException;
 
-import static java.lang.String.valueOf;
-import static java.lang.System.currentTimeMillis;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.security.MessageDigest.getInstance;
-import static java.util.Base64.getEncoder;
-import static org.apache.commons.lang3.ArrayUtils.addAll;
 import static org.springframework.web.util.UriComponentsBuilder.fromHttpUrl;
 
 @Component
@@ -28,23 +20,21 @@ public class ApiRequestProvider {
 
     private static final MultiValueMap<String, String> EMPTY_MAP = new LinkedMultiValueMap<>();
 
-    private static final String MESSAGE_DIGEST_ALGORITHM = "SHA-256";
     private static final String API_KEY_HEADER_NAME = "API-Key";
     private static final String API_SIGN_HEADER_NAME = "API-Sign";
     private static final String NONCE_BODY_PARAM_NAME = "nonce";
-    private static final int NONCE_TIME_MODIFIER = 10000;
 
     private final KrakenApiProperties properties;
-    private final Mac mac;
-    private final PostDataResolver postDataResolver;
+    private final SignedMessageResolver signedMessageResolver;
+    private final NonceResolver nonceResolver;
 
     ApiRequestProvider(final KrakenApiProperties properties,
-                       final Mac mac,
-                       final PostDataResolver postDataResolver) {
+                       final SignedMessageResolver signedMessageResolver,
+                       final NonceResolver nonceResolver) {
 
         this.properties = properties;
-        this.mac = mac;
-        this.postDataResolver = postDataResolver;
+        this.nonceResolver = nonceResolver;
+        this.signedMessageResolver = signedMessageResolver;
     }
 
     public Request get(@NonNull final String endPoint) {
@@ -64,26 +54,14 @@ public class ApiRequestProvider {
         return this.get(endPoint, EMPTY_MAP, body);
     }
 
-    @SneakyThrows
     private Request get(@NonNull final String endPoint,
                         @NonNull final MultiValueMap<String, String> query,
                         @NonNull final MultiValueMap<String, String> body) {
 
-        final var nonce = valueOf(currentTimeMillis() * NONCE_TIME_MODIFIER);
-        final var signedMessage = this.getSignedMessage(endPoint, query, body, nonce);
+        final var nonce = this.nonceResolver.resolve();
+        final var signedMessage = this.signedMessageResolver.resolve(endPoint, query, body, nonce);
 
         return new Request(this.getUri(endPoint, query), this.getHttEntity(nonce, body, signedMessage));
-    }
-
-    private String getSignedMessage(final String endPoint,
-                                    final MultiValueMap<String, String> query,
-                                    final MultiValueMap<String, String> body,
-                                    final String nonce) throws NoSuchAlgorithmException {
-
-        final var message = nonce + this.postDataResolver.resolve(query, body, nonce);
-        final var hash = getInstance(MESSAGE_DIGEST_ALGORITHM).digest(message.getBytes(UTF_8));
-
-        return getEncoder().encodeToString(this.mac.doFinal(addAll(endPoint.getBytes(), hash)));
     }
 
     private URI getUri(final String endPoint, final MultiValueMap<String, String> query) {

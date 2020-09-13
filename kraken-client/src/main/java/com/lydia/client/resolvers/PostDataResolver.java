@@ -1,6 +1,7 @@
 package com.lydia.client.resolvers;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
@@ -14,9 +15,9 @@ public class PostDataResolver {
     private static final String QUERY_PARAM_DELIMITER = "&";
     private static final String POST_PARAMS_LIST_DELIMITER = ",";
 
-    public String resolve(final MultiValueMap<String, String> query,
-                          final MultiValueMap<String, String> body,
-                          final String nonce) {
+    public String resolve(@NonNull final MultiValueMap<String, String> query,
+                          @NonNull final MultiValueMap<String, String> body,
+                          @NonNull final String nonce) {
 
         return this.joinQueryNonEmpty("nonce=" + nonce, this.toQueryString(query), this.toQueryString(body));
     }
