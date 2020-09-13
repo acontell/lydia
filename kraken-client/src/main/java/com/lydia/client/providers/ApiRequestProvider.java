@@ -18,11 +18,11 @@ import static org.springframework.web.util.UriComponentsBuilder.fromHttpUrl;
 @Component
 public class ApiRequestProvider {
 
-    private static final MultiValueMap<String, String> EMPTY_MAP = new LinkedMultiValueMap<>();
+    static final MultiValueMap<String, String> EMPTY_MAP = new LinkedMultiValueMap<>();
 
-    private static final String API_KEY_HEADER_NAME = "API-Key";
-    private static final String API_SIGN_HEADER_NAME = "API-Sign";
-    private static final String NONCE_BODY_PARAM_NAME = "nonce";
+    static final String API_KEY_HEADER_NAME = "API-Key";
+    static final String API_SIGN_HEADER_NAME = "API-Sign";
+    static final String NONCE_BODY_PARAM_NAME = "nonce";
 
     private final KrakenApiProperties properties;
     private final SignedMessageResolver signedMessageResolver;
