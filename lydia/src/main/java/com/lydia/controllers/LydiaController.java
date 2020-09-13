@@ -1,6 +1,6 @@
 package com.lydia.controllers;
 
-import com.lydia.client.KrakenApiClient;
+import com.lydia.client.ApiClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 public class LydiaController {
 
-    private final KrakenApiClient client;
+    private final ApiClient client;
 
-    public LydiaController(final KrakenApiClient client) {
+    public LydiaController(final ApiClient client) {
 
         this.client = client;
     }

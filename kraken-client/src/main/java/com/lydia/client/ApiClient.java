@@ -11,7 +11,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 @Component
-public class KrakenApiClient {
+public class ApiClient {
 
     static final String ASSET_POST_PARAM_KEY = "asset";
 
@@ -20,10 +20,10 @@ public class KrakenApiClient {
     private final KrakenPrivateEndPointProperties privateEndPoints;
     private final KrakenPublicEndPointProperties publicEndPoints;
 
-    KrakenApiClient(final ApiRequestProvider apiRequestProvider,
-                    final RestTemplate restTemplate,
-                    final KrakenPrivateEndPointProperties privateEndPoints,
-                    final KrakenPublicEndPointProperties publicEndPoints) {
+    ApiClient(final ApiRequestProvider apiRequestProvider,
+              final RestTemplate restTemplate,
+              final KrakenPrivateEndPointProperties privateEndPoints,
+              final KrakenPublicEndPointProperties publicEndPoints) {
 
         this.apiRequestProvider = apiRequestProvider;
         this.restTemplate = restTemplate;

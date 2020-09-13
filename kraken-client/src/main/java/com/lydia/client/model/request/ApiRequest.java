@@ -7,7 +7,7 @@ import org.springframework.util.MultiValueMap;
 import java.net.URI;
 
 @Value
-public class Request {
+public class ApiRequest {
 
     URI uri;
     HttpEntity<MultiValueMap<String, String>> entity;

@@ -1,7 +1,7 @@
 package com.lydia.client;
 
 
-import com.lydia.client.model.request.Request;
+import com.lydia.client.model.request.ApiRequest;
 import com.lydia.client.properties.KrakenPrivateEndPointProperties;
 import com.lydia.client.properties.KrakenPublicEndPointProperties;
 import com.lydia.client.providers.ApiRequestProvider;
@@ -18,21 +18,21 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 
-import static com.lydia.client.KrakenApiClient.ASSET_POST_PARAM_KEY;
+import static com.lydia.client.ApiClient.ASSET_POST_PARAM_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 @ExtendWith(MockitoExtension.class)
-class KrakenApiClientTest {
+class ApiClientTest {
 
     private static final String END_POINT = "END_POINT";
     private static final HttpEntity<MultiValueMap<String, String>> ENTITY = new HttpEntity<>(new LinkedMultiValueMap<>());
     private static final String EXPECTED = "EXPECTED";
 
     @Mock
-    private Request request;
+    private ApiRequest request;
     @Mock
     private URI uri;
     @Mock
@@ -47,7 +47,7 @@ class KrakenApiClientTest {
     private KrakenPublicEndPointProperties publicEndPoints;
 
     @InjectMocks
-    private KrakenApiClient client;
+    private ApiClient client;
 
     @Test
     void it_should_get_assets_info_using_made_request() {

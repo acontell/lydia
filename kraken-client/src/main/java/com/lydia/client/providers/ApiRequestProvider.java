@@ -1,6 +1,6 @@
 package com.lydia.client.providers;
 
-import com.lydia.client.model.request.Request;
+import com.lydia.client.model.request.ApiRequest;
 import com.lydia.client.properties.KrakenApiProperties;
 import com.lydia.client.resolvers.NonceResolver;
 import com.lydia.client.resolvers.SignedMessageResolver;
@@ -37,31 +37,31 @@ public class ApiRequestProvider {
         this.signedMessageResolver = signedMessageResolver;
     }
 
-    public Request get(@NonNull final String endPoint) {
+    public ApiRequest get(@NonNull final String endPoint) {
 
         return this.get(endPoint, EMPTY_MAP, EMPTY_MAP);
     }
 
-    public Request getWithQueryParams(@NonNull final String endPoint,
-                                      @NonNull final MultiValueMap<String, String> query) {
+    public ApiRequest getWithQueryParams(@NonNull final String endPoint,
+                                         @NonNull final MultiValueMap<String, String> query) {
 
         return this.get(endPoint, query, EMPTY_MAP);
     }
 
-    public Request getWithBody(@NonNull final String endPoint,
-                               @NonNull final MultiValueMap<String, String> body) {
+    public ApiRequest getWithBody(@NonNull final String endPoint,
+                                  @NonNull final MultiValueMap<String, String> body) {
 
         return this.get(endPoint, EMPTY_MAP, body);
     }
 
-    private Request get(@NonNull final String endPoint,
-                        @NonNull final MultiValueMap<String, String> query,
-                        @NonNull final MultiValueMap<String, String> body) {
+    private ApiRequest get(@NonNull final String endPoint,
+                           @NonNull final MultiValueMap<String, String> query,
+                           @NonNull final MultiValueMap<String, String> body) {
 
         final var nonce = this.nonceResolver.resolve();
         final var signedMessage = this.signedMessageResolver.resolve(endPoint, query, body, nonce);
 
-        return new Request(this.getUri(endPoint, query), this.getHttEntity(nonce, body, signedMessage));
+        return new ApiRequest(this.getUri(endPoint, query), this.getHttEntity(nonce, body, signedMessage));
     }
 
     private URI getUri(final String endPoint, final MultiValueMap<String, String> query) {
