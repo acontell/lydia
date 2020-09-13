@@ -86,7 +86,7 @@ public class ApiRequestProvider {
         return getEncoder().encodeToString(this.mac.doFinal(addAll(endPoint.getBytes(), hash)));
     }
 
-    public URI getUri(final String endPoint, final MultiValueMap<String, String> query) {
+    private URI getUri(final String endPoint, final MultiValueMap<String, String> query) {
 
         return fromHttpUrl(this.properties.getUrl() + endPoint)
                 .queryParams(query)
