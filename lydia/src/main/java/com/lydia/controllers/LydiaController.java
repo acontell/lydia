@@ -31,6 +31,6 @@ public class LydiaController {
     @GetMapping(value = "/trade-balance")
     public String getTradeBalance() {
 
-        return this.client.getTradeBalance();
+        return this.client.getTradeBalance("ZEUR");
     }
 }
