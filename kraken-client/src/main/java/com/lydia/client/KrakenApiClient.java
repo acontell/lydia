@@ -13,6 +13,8 @@ import static org.springframework.http.HttpMethod.POST;
 @Component
 public class KrakenApiClient {
 
+    static final String ASSET_POST_PARAM_KEY = "asset";
+
     private final ApiRequestProvider apiRequestProvider;
     private final RestTemplate restTemplate;
     private final KrakenPrivateEndPointProperties privateEndPoints;
@@ -46,7 +48,7 @@ public class KrakenApiClient {
     public String getTradeBalance(final String asset) {
 
         final var body = new LinkedMultiValueMap<String, String>();
-        body.add("asset", asset);
+        body.add(ASSET_POST_PARAM_KEY, asset);
 
         final var request = this.apiRequestProvider.getWithBody(this.privateEndPoints.getTradeBalance(), body);
 
