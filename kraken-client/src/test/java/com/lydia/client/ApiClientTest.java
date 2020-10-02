@@ -19,6 +19,8 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 
 import static com.lydia.client.ApiClient.ASSET_POST_PARAM_KEY;
+import static com.lydia.client.ApiClient.OFFSET_POST_PARAM_KEY;
+import static java.lang.String.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpMethod.GET;
@@ -94,6 +96,25 @@ class ApiClientTest {
         given(this.responseEntity.getBody()).willReturn(EXPECTED);
 
         final var actual = this.client.getTradeBalance(asset);
+
+        assertThat(actual).isEqualTo(EXPECTED);
+    }
+
+    @Test
+    void it_should_get_trades_history_using_made_request() {
+
+        final var offset = 1;
+        final var body = new LinkedMultiValueMap<String, String>();
+        body.add(OFFSET_POST_PARAM_KEY, valueOf(offset));
+
+        given(this.privateEndPoints.getTradesHistory()).willReturn(END_POINT);
+        given(this.apiRequestProvider.getWithBody(END_POINT, body)).willReturn(this.request);
+        given(this.request.getUri()).willReturn(this.uri);
+        given(this.request.getEntity()).willReturn(ENTITY);
+        given(this.restTemplate.exchange(this.uri, POST, ENTITY, Object.class)).willReturn(this.responseEntity);
+        given(this.responseEntity.getBody()).willReturn(EXPECTED);
+
+        final var actual = this.client.getTradesHistory(offset);
 
         assertThat(actual).isEqualTo(EXPECTED);
     }

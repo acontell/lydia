@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import static java.lang.String.valueOf;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
@@ -17,6 +18,7 @@ import static org.springframework.http.HttpMethod.POST;
 public class ApiClient {
 
     static final String ASSET_POST_PARAM_KEY = "asset";
+    static final String OFFSET_POST_PARAM_KEY = "ofs";
 
     private final ApiRequestProvider apiRequestProvider;
     private final RestTemplate restTemplate;
@@ -57,6 +59,17 @@ public class ApiClient {
         body.add(ASSET_POST_PARAM_KEY, asset);
 
         final var request = this.apiRequestProvider.getWithBody(this.privateEndPoints.getTradeBalance(), body);
+
+        return this.restTemplate.exchange(request.getUri(), POST, request.getEntity(), Object.class).getBody();
+    }
+
+    @Cacheable
+    public Object getTradesHistory(final int offSet) {
+
+        final var body = new LinkedMultiValueMap<String, String>();
+        body.add(OFFSET_POST_PARAM_KEY, valueOf(offSet));
+
+        final var request = this.apiRequestProvider.getWithBody(this.privateEndPoints.getTradesHistory(), body);
 
         return this.restTemplate.exchange(request.getUri(), POST, request.getEntity(), Object.class).getBody();
     }
