@@ -33,4 +33,10 @@ public class LydiaController {
 
         return this.client.getTradeBalance("ZEUR");
     }
+
+    @GetMapping(value = "/trades-history")
+    public Object getTradesHistory() {
+
+        return this.client.getTradesHistory(20);
+    }
 }
