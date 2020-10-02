@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.lydia</groupId>
             <artifactId>kraken-client</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 

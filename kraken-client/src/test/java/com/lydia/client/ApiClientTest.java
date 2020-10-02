@@ -36,7 +36,7 @@ class ApiClientTest {
     @Mock
     private URI uri;
     @Mock
-    private ResponseEntity<String> responseEntity;
+    private ResponseEntity<Object> responseEntity;
     @Mock
     private ApiRequestProvider apiRequestProvider;
     @Mock
@@ -56,7 +56,7 @@ class ApiClientTest {
         given(this.apiRequestProvider.get(END_POINT)).willReturn(this.request);
         given(this.request.getUri()).willReturn(this.uri);
         given(this.request.getEntity()).willReturn(ENTITY);
-        given(this.restTemplate.exchange(this.uri, GET, ENTITY, String.class)).willReturn(this.responseEntity);
+        given(this.restTemplate.exchange(this.uri, GET, ENTITY, Object.class)).willReturn(this.responseEntity);
         given(this.responseEntity.getBody()).willReturn(EXPECTED);
 
         final var actual = this.client.getAssetsInfo();
@@ -71,7 +71,7 @@ class ApiClientTest {
         given(this.apiRequestProvider.get(END_POINT)).willReturn(this.request);
         given(this.request.getUri()).willReturn(this.uri);
         given(this.request.getEntity()).willReturn(ENTITY);
-        given(this.restTemplate.exchange(this.uri, POST, ENTITY, String.class)).willReturn(this.responseEntity);
+        given(this.restTemplate.exchange(this.uri, POST, ENTITY, Object.class)).willReturn(this.responseEntity);
         given(this.responseEntity.getBody()).willReturn(EXPECTED);
 
         final var actual = this.client.getAccountBalance();
@@ -90,7 +90,7 @@ class ApiClientTest {
         given(this.apiRequestProvider.getWithBody(END_POINT, body)).willReturn(this.request);
         given(this.request.getUri()).willReturn(this.uri);
         given(this.request.getEntity()).willReturn(ENTITY);
-        given(this.restTemplate.exchange(this.uri, POST, ENTITY, String.class)).willReturn(this.responseEntity);
+        given(this.restTemplate.exchange(this.uri, POST, ENTITY, Object.class)).willReturn(this.responseEntity);
         given(this.responseEntity.getBody()).willReturn(EXPECTED);
 
         final var actual = this.client.getTradeBalance(asset);

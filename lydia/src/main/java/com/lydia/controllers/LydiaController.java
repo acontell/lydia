@@ -17,19 +17,19 @@ public class LydiaController {
     }
 
     @GetMapping(value = "/assets-info")
-    public String getAssetsInfo() {
+    public Object getAssetsInfo() {
 
         return this.client.getAssetsInfo();
     }
 
     @GetMapping(value = "/account-balance")
-    public String getAccountBalance() {
+    public Object getAccountBalance() {
 
         return this.client.getAccountBalance();
     }
 
     @GetMapping(value = "/trade-balance")
-    public String getTradeBalance() {
+    public Object getTradeBalance() {
 
         return this.client.getTradeBalance("ZEUR");
     }
