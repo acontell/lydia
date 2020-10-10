@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.http.HttpStatus.TOO_MANY_REQUESTS;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
 public class LydiaController {
 
     static final String RETRY_HEADER = "X-Rate-Limit-Retry-After-Seconds";
     static final String DEFAULT_OFFSET_VALUE = "20";
     private final ApiClient client;
 
-    public LydiaController(final ApiClient client) {
+    LydiaController(final ApiClient client) {
 
         this.client = client;
     }

@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class LydiaControllerTest {
 
     private static final Object RESPONSE = "RESPONSE";
+    private static final String API_PATH = "/api";
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,7 +38,7 @@ class LydiaControllerTest {
 
         given(this.apiClient.getAssetsInfo()).willReturn(RESPONSE);
 
-        this.assertRequestIsCorrect(get("/assets-info"));
+        this.assertRequestIsCorrect(get(API_PATH + "/assets-info"));
     }
 
     @SneakyThrows
@@ -53,7 +54,7 @@ class LydiaControllerTest {
 
         given(this.apiClient.getAccountBalance()).willReturn(RESPONSE);
 
-        this.assertRequestIsCorrect(get("/account-balance"));
+        this.assertRequestIsCorrect(get(API_PATH + "/account-balance"));
     }
 
     @Test
@@ -61,7 +62,7 @@ class LydiaControllerTest {
 
         given(this.apiClient.getTradeBalance("ZEUR")).willReturn(RESPONSE);
 
-        this.assertRequestIsCorrect(get("/trade-balance"));
+        this.assertRequestIsCorrect(get(API_PATH + "/trade-balance"));
     }
 
     @Test
@@ -69,7 +70,7 @@ class LydiaControllerTest {
 
         given(this.apiClient.getTradesHistory(parseInt(DEFAULT_OFFSET_VALUE))).willReturn(RESPONSE);
 
-        this.assertRequestIsCorrect(get("/trades-history"));
+        this.assertRequestIsCorrect(get(API_PATH + "/trades-history"));
     }
 
     @Test
@@ -77,7 +78,7 @@ class LydiaControllerTest {
 
         given(this.apiClient.getTradesHistory(400)).willReturn(RESPONSE);
 
-        this.assertRequestIsCorrect(get("/trades-history").param("offset", "400"));
+        this.assertRequestIsCorrect(get(API_PATH + "/trades-history").param("offset", "400"));
     }
 
     @Test
@@ -85,7 +86,7 @@ class LydiaControllerTest {
 
         given(this.apiClient.getTradesHistory(parseInt(DEFAULT_OFFSET_VALUE))).willThrow(new ApiCallRateLimitExceededException(100));
 
-        this.mockMvc.perform(get("/trades-history"))
+        this.mockMvc.perform(get(API_PATH + "/trades-history"))
                 .andExpect(status().isTooManyRequests())
                 .andExpect(header().string(RETRY_HEADER, "100"));
     }
