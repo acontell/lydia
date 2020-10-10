@@ -42,6 +42,7 @@ public class ApiClientIntegrationTest {
     private static final HttpEntity<MultiValueMap<String, String>> ENTITY = getHttEntity();
     private static final Object EXPECTED = "OK";
     private static final ResponseEntity<Object> RESPONSE = ResponseEntity.of(of(EXPECTED));
+
     @MockBean
     private NonceResolver nonceResolver;
     @MockBean
