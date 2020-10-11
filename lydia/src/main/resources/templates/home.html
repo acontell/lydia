@@ -12,25 +12,10 @@
     <script defer th:src="@{/js/main.js}" type="text/javascript"></script>
 </head>
 <body>
-<div id="app">
+<div class="ml-3" id="app">
     <h1>Crypto Currencies Summary</h1>
 
-    <section v-if="errored">
-        <p>We're sorry, we're not able to retrieve this information at the moment, please try back later</p>
-    </section>
-
-    <section v-else>
-        <div v-if="loading">
-            <div class="spinner-border text-info" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-
-        <div v-else>
-            {{ message }}:
-        </div>
-
-    </section>
+    <trade-balance></trade-balance>
 </div>
 </body>
 </html>
