@@ -11,7 +11,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import static com.lydia.controllers.LydiaController.BANK_METHOD;
 import static com.lydia.controllers.LydiaController.DEFAULT_OFFSET_VALUE;
+import static com.lydia.controllers.LydiaController.EUR_ASSET;
 import static com.lydia.controllers.LydiaController.RETRY_HEADER;
 import static java.lang.Integer.parseInt;
 import static org.mockito.BDDMockito.given;
@@ -79,6 +81,22 @@ class LydiaControllerTest {
         given(this.apiClient.getTradesHistory(400)).willReturn(RESPONSE);
 
         this.assertRequestIsCorrect(get(API_PATH + "/trades-history").param("offset", "400"));
+    }
+
+    @Test
+    void it_should_return_deposit_status() {
+
+        given(this.apiClient.getDepositStatus(EUR_ASSET, BANK_METHOD)).willReturn(RESPONSE);
+
+        this.assertRequestIsCorrect(get(API_PATH + "/deposit-status"));
+    }
+
+    @Test
+    void it_should_return_withdraw_status() {
+
+        given(this.apiClient.getWithdrawStatus(EUR_ASSET, BANK_METHOD)).willReturn(RESPONSE);
+
+        this.assertRequestIsCorrect(get(API_PATH + "/withdraw-status"));
     }
 
     @Test

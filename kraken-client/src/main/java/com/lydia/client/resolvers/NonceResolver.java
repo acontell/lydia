@@ -8,7 +8,7 @@ import static java.lang.System.currentTimeMillis;
 @Component
 public class NonceResolver {
 
-    private static final int NONCE_TIME_MODIFIER = 10000;
+    private static final int NONCE_TIME_MODIFIER = 1000;
 
     public String resolve() {
 

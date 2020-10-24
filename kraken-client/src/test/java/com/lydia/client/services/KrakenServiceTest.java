@@ -28,6 +28,7 @@ class KrakenServiceTest {
     private static final HttpEntity<MultiValueMap<String, String>> SAMPLE_ENTITY = new HttpEntity<>(new LinkedMultiValueMap<>());
     private static final Object EXPECTED = "EXPECTED";
     private static final ApiRequest REQUEST = new ApiRequest(SAMPLE_URI, SAMPLE_ENTITY);
+
     @Mock
     private ResponseEntity<Object> responseEntity;
     @Mock
@@ -83,6 +84,26 @@ class KrakenServiceTest {
         given(this.restTemplate.exchange(SAMPLE_URI, POST, SAMPLE_ENTITY, Object.class)).willReturn(this.responseEntity);
 
         final var actual = this.krakenService.getTradesHistory(REQUEST);
+
+        assertThat(actual).isEqualTo(EXPECTED);
+    }
+
+    @Test
+    void it_send_request_for_get_deposit_status() {
+
+        given(this.restTemplate.exchange(SAMPLE_URI, POST, SAMPLE_ENTITY, Object.class)).willReturn(this.responseEntity);
+
+        final var actual = this.krakenService.getDepositStatus(REQUEST);
+
+        assertThat(actual).isEqualTo(EXPECTED);
+    }
+
+    @Test
+    void it_send_request_for_get_withdraw_status() {
+
+        given(this.restTemplate.exchange(SAMPLE_URI, POST, SAMPLE_ENTITY, Object.class)).willReturn(this.responseEntity);
+
+        final var actual = this.krakenService.getWithdrawStatus(REQUEST);
 
         assertThat(actual).isEqualTo(EXPECTED);
     }

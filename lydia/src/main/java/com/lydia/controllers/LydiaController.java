@@ -17,6 +17,9 @@ public class LydiaController {
 
     static final String RETRY_HEADER = "X-Rate-Limit-Retry-After-Seconds";
     static final String DEFAULT_OFFSET_VALUE = "20";
+    static final String EUR_ASSET = "ZEUR";
+    static final String BANK_METHOD = "Fidor Bank AG (SEPA)";
+
     private final ApiClient client;
 
     LydiaController(final ApiClient client) {
@@ -39,13 +42,25 @@ public class LydiaController {
     @GetMapping(value = "/trade-balance")
     public Object getTradeBalance() {
 
-        return this.client.getTradeBalance("ZEUR");
+        return this.client.getTradeBalance(EUR_ASSET);
     }
 
     @GetMapping(value = "/trades-history")
     public Object getTradesHistory(@RequestParam(defaultValue = DEFAULT_OFFSET_VALUE) int offset) {
 
         return this.client.getTradesHistory(offset);
+    }
+
+    @GetMapping(value = "/deposit-status")
+    public Object getDepositStatus() {
+
+        return this.client.getDepositStatus(EUR_ASSET, BANK_METHOD);
+    }
+
+    @GetMapping(value = "/withdraw-status")
+    public Object getWithdrawStatus() {
+
+        return this.client.getWithdrawStatus(EUR_ASSET, BANK_METHOD);
     }
 
     @ExceptionHandler(ApiCallRateLimitExceededException.class)

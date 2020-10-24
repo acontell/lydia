@@ -25,10 +25,10 @@ class NonceResolverTest {
     }
 
     @Test
-    void it_should_be_longer_than_sixteen_characters() {
+    void it_should_be_longer_than_fifteen_characters() {
 
         final var actual = NONCE_RESOLVER.resolve();
 
-        assertThat(actual.length()).isGreaterThan(16);
+        assertThat(actual.length()).isGreaterThan(15);
     }
 }

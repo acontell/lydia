@@ -15,6 +15,7 @@ public class ApiClient {
 
     static final String ASSET_POST_PARAM_KEY = "asset";
     static final String OFFSET_POST_PARAM_KEY = "ofs";
+    static final String METHOD_POST_PARAM_KEY = "method";
 
     private final ApiRequestProvider apiRequestProvider;
     private final KrakenService krakenService;
@@ -68,5 +69,31 @@ public class ApiClient {
         final var request = this.apiRequestProvider.getWithBody(this.privateEndPoints.getTradesHistory(), body);
 
         return this.krakenService.getTradesHistory(request);
+    }
+
+    @Cacheable(cacheNames = "depositStatus")
+    public Object getDepositStatus(final String asset,
+                                   final String method) {
+
+        final var body = new LinkedMultiValueMap<String, String>();
+        body.add(ASSET_POST_PARAM_KEY, asset);
+        body.add(METHOD_POST_PARAM_KEY, method);
+
+        final var request = this.apiRequestProvider.getWithBody(this.privateEndPoints.getDepositStatus(), body);
+
+        return this.krakenService.getDepositStatus(request);
+    }
+
+    @Cacheable(cacheNames = "withdrawStatus")
+    public Object getWithdrawStatus(final String asset,
+                                    final String method) {
+
+        final var body = new LinkedMultiValueMap<String, String>();
+        body.add(ASSET_POST_PARAM_KEY, asset);
+        body.add(METHOD_POST_PARAM_KEY, method);
+
+        final var request = this.apiRequestProvider.getWithBody(this.privateEndPoints.getWithdrawStatus(), body);
+
+        return this.krakenService.getWithdrawStatus(request);
     }
 }
