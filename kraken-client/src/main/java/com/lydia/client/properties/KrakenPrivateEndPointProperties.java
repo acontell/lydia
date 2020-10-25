@@ -12,6 +12,5 @@ public class KrakenPrivateEndPointProperties {
     String accountBalance;
     String tradeBalance;
     String tradesHistory;
-    String depositStatus;
-    String withdrawStatus;
+    String ledgers;
 }

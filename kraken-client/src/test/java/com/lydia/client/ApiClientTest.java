@@ -14,8 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.LinkedMultiValueMap;
 
 import static com.lydia.client.ApiClient.ASSET_POST_PARAM_KEY;
-import static com.lydia.client.ApiClient.METHOD_POST_PARAM_KEY;
 import static com.lydia.client.ApiClient.OFFSET_POST_PARAM_KEY;
+import static com.lydia.client.ApiClient.TYPE_POST_PARAM_KEY;
 import static java.lang.String.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -97,37 +97,18 @@ class ApiClientTest {
     }
 
     @Test
-    void it_should_get_deposit_status_using_made_request() {
+    void it_should_get_ledgers_using_made_request() {
 
-        final var asset = "ASSET";
-        final var method = "METHOD";
         final var body = new LinkedMultiValueMap<String, String>();
-        body.add(ASSET_POST_PARAM_KEY, asset);
-        body.add(METHOD_POST_PARAM_KEY, method);
+        body.add(TYPE_POST_PARAM_KEY, "type");
+        body.add(ASSET_POST_PARAM_KEY, "asset");
+        body.add(OFFSET_POST_PARAM_KEY, "1");
 
-        given(this.privateEndPoints.getDepositStatus()).willReturn(END_POINT);
+        given(this.privateEndPoints.getLedgers()).willReturn(END_POINT);
         given(this.apiRequestProvider.getWithBody(END_POINT, body)).willReturn(this.request);
-        given(this.krakenService.getDepositStatus(this.request)).willReturn(EXPECTED);
+        given(this.krakenService.getLedgers(this.request)).willReturn(EXPECTED);
 
-        final var actual = this.client.getDepositStatus(asset, method);
-
-        assertThat(actual).isEqualTo(EXPECTED);
-    }
-
-    @Test
-    void it_should_get_withdraw_status_using_made_request() {
-
-        final var asset = "ASSET";
-        final var method = "METHOD";
-        final var body = new LinkedMultiValueMap<String, String>();
-        body.add(ASSET_POST_PARAM_KEY, asset);
-        body.add(METHOD_POST_PARAM_KEY, method);
-
-        given(this.privateEndPoints.getWithdrawStatus()).willReturn(END_POINT);
-        given(this.apiRequestProvider.getWithBody(END_POINT, body)).willReturn(this.request);
-        given(this.krakenService.getWithdrawStatus(this.request)).willReturn(EXPECTED);
-
-        final var actual = this.client.getWithdrawStatus(asset, method);
+        final var actual = this.client.getLedgers("type", "asset", 1);
 
         assertThat(actual).isEqualTo(EXPECTED);
     }

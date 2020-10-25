@@ -89,21 +89,11 @@ class KrakenServiceTest {
     }
 
     @Test
-    void it_send_request_for_get_deposit_status() {
+    void it_send_request_for_get_ledgers() {
 
         given(this.restTemplate.exchange(SAMPLE_URI, POST, SAMPLE_ENTITY, Object.class)).willReturn(this.responseEntity);
 
-        final var actual = this.krakenService.getDepositStatus(REQUEST);
-
-        assertThat(actual).isEqualTo(EXPECTED);
-    }
-
-    @Test
-    void it_send_request_for_get_withdraw_status() {
-
-        given(this.restTemplate.exchange(SAMPLE_URI, POST, SAMPLE_ENTITY, Object.class)).willReturn(this.responseEntity);
-
-        final var actual = this.krakenService.getWithdrawStatus(REQUEST);
+        final var actual = this.krakenService.getLedgers(REQUEST);
 
         assertThat(actual).isEqualTo(EXPECTED);
     }

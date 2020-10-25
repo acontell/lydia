@@ -49,13 +49,7 @@ public class KrakenService {
     }
 
     @ApiCallRateLimit(apiCallRateCost = 2)
-    public Object getDepositStatus(final ApiRequest request) {
-
-        return this.doExchange(request, POST);
-    }
-
-    @ApiCallRateLimit(apiCallRateCost = 2)
-    public Object getWithdrawStatus(final ApiRequest request) {
+    public Object getLedgers(final ApiRequest request) {
 
         return this.doExchange(request, POST);
     }

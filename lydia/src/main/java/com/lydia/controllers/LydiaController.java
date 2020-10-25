@@ -16,9 +16,10 @@ import static org.springframework.http.HttpStatus.TOO_MANY_REQUESTS;
 public class LydiaController {
 
     static final String RETRY_HEADER = "X-Rate-Limit-Retry-After-Seconds";
-    static final String DEFAULT_OFFSET_VALUE = "20";
+    static final String NO_OFFSET_VALUE = "0";
+    static final String LEDGER_TYPE_DEPOSIT = "deposit";
+    static final String LEDGER_TYPE_WITHDRAWAL = "withdrawal";
     static final String EUR_ASSET = "ZEUR";
-    static final String BANK_METHOD = "Fidor Bank AG (SEPA)";
 
     private final ApiClient client;
 
@@ -46,21 +47,21 @@ public class LydiaController {
     }
 
     @GetMapping(value = "/trades-history")
-    public Object getTradesHistory(@RequestParam(defaultValue = DEFAULT_OFFSET_VALUE) int offset) {
+    public Object getTradesHistory(@RequestParam(defaultValue = NO_OFFSET_VALUE) final int offset) {
 
         return this.client.getTradesHistory(offset);
     }
 
-    @GetMapping(value = "/deposit-status")
-    public Object getDepositStatus() {
+    @GetMapping(value = "/get-deposits")
+    public Object getDepositStatus(@RequestParam(defaultValue = NO_OFFSET_VALUE) final int offset) {
 
-        return this.client.getDepositStatus(EUR_ASSET, BANK_METHOD);
+        return this.client.getLedgers(LEDGER_TYPE_DEPOSIT, EUR_ASSET, offset);
     }
 
-    @GetMapping(value = "/withdraw-status")
-    public Object getWithdrawStatus() {
+    @GetMapping(value = "/get-withdraws")
+    public Object getWithdrawStatus(@RequestParam(defaultValue = NO_OFFSET_VALUE) final int offset) {
 
-        return this.client.getWithdrawStatus(EUR_ASSET, BANK_METHOD);
+        return this.client.getLedgers(LEDGER_TYPE_WITHDRAWAL, EUR_ASSET, offset);
     }
 
     @ExceptionHandler(ApiCallRateLimitExceededException.class)

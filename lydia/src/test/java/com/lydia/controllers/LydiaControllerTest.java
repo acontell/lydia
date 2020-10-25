@@ -11,9 +11,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import static com.lydia.controllers.LydiaController.BANK_METHOD;
-import static com.lydia.controllers.LydiaController.DEFAULT_OFFSET_VALUE;
 import static com.lydia.controllers.LydiaController.EUR_ASSET;
+import static com.lydia.controllers.LydiaController.LEDGER_TYPE_DEPOSIT;
+import static com.lydia.controllers.LydiaController.LEDGER_TYPE_WITHDRAWAL;
+import static com.lydia.controllers.LydiaController.NO_OFFSET_VALUE;
 import static com.lydia.controllers.LydiaController.RETRY_HEADER;
 import static java.lang.Integer.parseInt;
 import static org.mockito.BDDMockito.given;
@@ -70,7 +71,7 @@ class LydiaControllerTest {
     @Test
     void it_should_return_trades_history_with_default_offset_when_not_present() {
 
-        given(this.apiClient.getTradesHistory(parseInt(DEFAULT_OFFSET_VALUE))).willReturn(RESPONSE);
+        given(this.apiClient.getTradesHistory(parseInt(NO_OFFSET_VALUE))).willReturn(RESPONSE);
 
         this.assertRequestIsCorrect(get(API_PATH + "/trades-history"));
     }
@@ -84,25 +85,25 @@ class LydiaControllerTest {
     }
 
     @Test
-    void it_should_return_deposit_status() {
+    void it_should_return_deposits() {
 
-        given(this.apiClient.getDepositStatus(EUR_ASSET, BANK_METHOD)).willReturn(RESPONSE);
+        given(this.apiClient.getLedgers(LEDGER_TYPE_DEPOSIT, EUR_ASSET, 400)).willReturn(RESPONSE);
 
-        this.assertRequestIsCorrect(get(API_PATH + "/deposit-status"));
+        this.assertRequestIsCorrect(get(API_PATH + "/get-deposits").param("offset", "400"));
     }
 
     @Test
-    void it_should_return_withdraw_status() {
+    void it_should_return_withdraws() {
 
-        given(this.apiClient.getWithdrawStatus(EUR_ASSET, BANK_METHOD)).willReturn(RESPONSE);
+        given(this.apiClient.getLedgers(LEDGER_TYPE_WITHDRAWAL, EUR_ASSET, 400)).willReturn(RESPONSE);
 
-        this.assertRequestIsCorrect(get(API_PATH + "/withdraw-status"));
+        this.assertRequestIsCorrect(get(API_PATH + "/get-withdraws").param("offset", "400"));
     }
 
     @Test
     void it_should_return_too_many_requests() throws Exception {
 
-        given(this.apiClient.getTradesHistory(parseInt(DEFAULT_OFFSET_VALUE))).willThrow(new ApiCallRateLimitExceededException(100));
+        given(this.apiClient.getTradesHistory(parseInt(NO_OFFSET_VALUE))).willThrow(new ApiCallRateLimitExceededException(100));
 
         this.mockMvc.perform(get(API_PATH + "/trades-history"))
                 .andExpect(status().isTooManyRequests())
