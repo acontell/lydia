@@ -19,6 +19,7 @@ export default class Retriever {
     tickers(tickers) {
 
         return axios.get('/api/tickers', {params: {tickers: tickers.join(',')}})
+            .then(this.massager.tickers)
     }
 
     tradesHistory(offset = 0) {

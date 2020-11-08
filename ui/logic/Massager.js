@@ -33,4 +33,15 @@ export default class Massager {
             total: _.sum(_.map(ledgers, ledger => _.sum(_.map(_.map(ledger, 'amount'), _.toNumber))))
         }
     }
+
+    tickers({data: {result: tickers}}) {
+
+        return _.reduce(tickers, (acc, value, key) => {
+
+            let pairNoEur = _.replace(key, 'EUR', '');
+            let normalizedPair = _.get(OLD_ASSETS, pairNoEur, pairNoEur);
+            acc[normalizedPair] = +value['c'][0]
+            return acc
+        }, {})
+    }
 }
