@@ -34,13 +34,11 @@ export default class Massager {
 
     updateTrades(trades, tickers) {
 
-        return _
-            .chain(trades)
-            .map((asset, key) => {
-                console.log(tickers)
-                console.log(key)
-                this.trade(asset, tickers[key])
-            })
+        return _.map(trades, (asset, key) => {
+            console.log(tickers)
+            console.log(key)
+            this.trade(asset, tickers[key])
+        })
     }
 
     trade(asset, currentValue) {
