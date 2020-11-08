@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Retriever from './logic/Retriever'
+import Composer from './logic/Composer'
 
 const NUMBER_FORMATTER = new Intl.NumberFormat("es-ES", {style: "currency", currency: "EUR"})
 
@@ -124,18 +124,16 @@ Vue.component('trade-balance', {
     },
     mounted() {
 
-        let retriever = new Retriever();
+        let composer = new Composer();
 
-        retriever.tradeBalance()
-            .then(response => this.balance = response.data.result)
-            .then(l => retriever.deposits())
-            .then(deposits => this.deposits = deposits)
-            .then(l => retriever.withdraws())
-            .then(withdraws => this.withdraws = withdraws)
-            .then(l => retriever.tradesHistory())
-            .then(tradesHistory => this.tradesHistory = tradesHistory)
-            .then(l => retriever.tickers(Object.keys(this.tradesHistory)))
-            .then(console.log)
+        composer.compose()
+            .then(e => {
+                console.log(e)
+                this.tradesHistory = e.tradesHistory
+                this.balance = e.balance
+                this.deposits = e.deposits
+                this.withdraws = e.withdraws
+            })
             .catch(error => {
                 console.log(error)
                 this.errored = true

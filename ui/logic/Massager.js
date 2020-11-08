@@ -16,7 +16,12 @@ function normalizePair(obj) {
 
 export default class Massager {
 
-    trades(trades) {
+    tradeBalance({data: {result: balance}}) {
+
+        return balance
+    }
+
+    trades(trades, tickers) {
 
         return _
             .chain(trades)

@@ -1,15 +1,9 @@
 import axios from 'axios';
 import _ from 'lodash';
-import Massager from "./Massager";
 
 const MAX_PAGE_SIZE = 50
 
 export default class Retriever {
-
-    constructor() {
-
-        this.massager = new Massager()
-    }
 
     tradeBalance() {
 
@@ -19,7 +13,6 @@ export default class Retriever {
     tickers(tickers) {
 
         return axios.get('/api/tickers', {params: {tickers: tickers.join(',')}})
-            .then(this.massager.tickers)
     }
 
     tradesHistory(offset = 0) {
@@ -27,7 +20,7 @@ export default class Retriever {
         return getData('/api/trades-history', offset, ({data: {result: {trades, count}}}) => ({
             result: trades,
             count
-        }), this.massager.trades)
+        }))
     }
 
     ledger(endpoint, offset) {
@@ -35,7 +28,7 @@ export default class Retriever {
         return getData(endpoint, offset, ({data: {result: {ledger, count}}}) => ({
             result: ledger,
             count
-        }), this.massager.ledger)
+        }))
     }
 
     deposits(offset = 0) {
@@ -49,7 +42,7 @@ export default class Retriever {
     }
 }
 
-function getData(endpoint, offset, mappingFnc, massageFnc, resultRef = []) {
+function getData(endpoint, offset, mappingFnc, resultRef = []) {
 
     return axios.get(endpoint, {params: {offset: offset}})
         .then(mappingFnc)
@@ -59,8 +52,8 @@ function getData(endpoint, offset, mappingFnc, massageFnc, resultRef = []) {
             let size = _.reduce(resultRef, (acc, value) => acc + _.size(value), 0)
 
             return isAllLoaded(offset, size, +count)
-                ? massageFnc(resultRef)
-                : getData(endpoint, size, mappingFnc, massageFnc, resultRef)
+                ? resultRef
+                : getData(endpoint, size, mappingFnc, resultRef)
         })
 }
 
