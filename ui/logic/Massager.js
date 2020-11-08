@@ -21,7 +21,7 @@ export default class Massager {
         return balance
     }
 
-    trades(trades, tickers) {
+    trades(trades) {
 
         return _
             .chain(trades)
@@ -30,6 +30,23 @@ export default class Massager {
             .map(normalizePair)
             .groupBy('pair')
             .value();
+    }
+
+    updateTrades(trades, tickers) {
+
+        return _
+            .chain(trades)
+            .map((asset, key) => {
+                console.log(tickers)
+                console.log(key)
+                this.trade(asset, tickers[key])
+            })
+    }
+
+    trade(asset, currentValue) {
+
+        console.log(asset, currentValue)
+        return asset
     }
 
     ledger(ledgers) {
