@@ -43,7 +43,7 @@ Vue.component('trade-balance', {
 
         <div v-else>
             <div class="card border-dark mb-3" style="max-width: 30rem;">
-                <div class="card-header">Trade Balance</div>
+                <div class="card-header"><b>Trade Balance</b></div>
                 <div class="card-body text-dark">
                     <table class="table">
                       <tbody>
@@ -88,12 +88,12 @@ Vue.component('trade-balance', {
                           </thead>
                           <tbody>
                             <tr v-for="order in sortOrdersAsc(orders)">
-                              <td>{{ order.type | toUpperCase }}</td>
+                              <td v-bind:class="{ 'text-success': order.type === 'sell', 'text-danger': order.type === 'buy' }">{{ order.type | toUpperCase }}</td>
                               <td>{{ order.time | toDate }}</td>
                               <td>{{ order.vol }}</td>
                               <td>{{ order.price }}</td>
-                              <td>{{ order.cost | toEuros }}</td>
-                              <td>{{ order.fee | toEuros }}</td>
+                              <td v-bind:class="{ 'text-success': order.type === 'sell', 'text-danger': order.type === 'buy' }">{{ order.cost | toEuros }}</td>
+                              <td class="text-danger">{{ order.fee | toEuros }}</td>
                             </tr>
                           </tbody>
                         </table>                    
