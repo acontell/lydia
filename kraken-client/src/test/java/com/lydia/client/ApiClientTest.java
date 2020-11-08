@@ -13,8 +13,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.LinkedMultiValueMap;
 
+import java.util.List;
+
 import static com.lydia.client.ApiClient.ASSET_POST_PARAM_KEY;
 import static com.lydia.client.ApiClient.OFFSET_POST_PARAM_KEY;
+import static com.lydia.client.ApiClient.PAIR_URI_PARAM_KEY;
 import static com.lydia.client.ApiClient.TYPE_POST_PARAM_KEY;
 import static java.lang.String.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,6 +51,21 @@ class ApiClientTest {
         given(this.krakenService.getAssetsInfo(this.request)).willReturn(EXPECTED);
 
         final var actual = this.client.getAssetsInfo();
+
+        assertThat(actual).isEqualTo(EXPECTED);
+    }
+
+    @Test
+    void it_should_get_tickers_using_made_request() {
+
+        final var params = new LinkedMultiValueMap<String, String>();
+        params.add(PAIR_URI_PARAM_KEY, "a,b,c");
+
+        given(this.publicEndPoints.getTickers()).willReturn(END_POINT);
+        given(this.apiRequestProvider.getWithQueryParams(END_POINT, params)).willReturn(this.request);
+        given(this.krakenService.getTickers(this.request)).willReturn(EXPECTED);
+
+        final var actual = this.client.getTickers(List.of("a", "b", "c"));
 
         assertThat(actual).isEqualTo(EXPECTED);
     }

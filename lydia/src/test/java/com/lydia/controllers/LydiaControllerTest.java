@@ -11,6 +11,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.List;
+
+import static com.lydia.controllers.LydiaController.EUR;
 import static com.lydia.controllers.LydiaController.EUR_ASSET;
 import static com.lydia.controllers.LydiaController.LEDGER_TYPE_DEPOSIT;
 import static com.lydia.controllers.LydiaController.LEDGER_TYPE_WITHDRAWAL;
@@ -50,6 +53,14 @@ class LydiaControllerTest {
         this.mockMvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(content().string("RESPONSE"));
+    }
+
+    @Test
+    void it_should_return_tickers() {
+
+        given(this.apiClient.getTickers(List.of("a" + EUR, "b" + EUR))).willReturn(RESPONSE);
+
+        this.assertRequestIsCorrect(get(API_PATH + "/tickers").param("tickers", "a", "b"));
     }
 
     @Test

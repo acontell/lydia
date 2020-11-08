@@ -8,6 +8,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 
+import java.util.List;
+
+import static java.lang.String.join;
 import static java.lang.String.valueOf;
 
 @Component
@@ -16,6 +19,7 @@ public class ApiClient {
     static final String ASSET_POST_PARAM_KEY = "asset";
     static final String OFFSET_POST_PARAM_KEY = "ofs";
     static final String TYPE_POST_PARAM_KEY = "type";
+    static final String PAIR_URI_PARAM_KEY = "pair";
 
     private final ApiRequestProvider apiRequestProvider;
     private final KrakenService krakenService;
@@ -39,6 +43,17 @@ public class ApiClient {
         final var request = this.apiRequestProvider.get(this.publicEndPoints.getAssetsInfo());
 
         return this.krakenService.getAssetsInfo(request);
+    }
+
+    @Cacheable(cacheNames = "tickers")
+    public Object getTickers(final List<String> tickers) {
+
+        final var params = new LinkedMultiValueMap<String, String>();
+        params.add(PAIR_URI_PARAM_KEY, join(",", tickers));
+
+        final var request = this.apiRequestProvider.getWithQueryParams(this.publicEndPoints.getTickers(), params);
+
+        return this.krakenService.getTickers(request);
     }
 
     @Cacheable(cacheNames = "accountBalance")

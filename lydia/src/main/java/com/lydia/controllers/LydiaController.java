@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.TOO_MANY_REQUESTS;
 
 @RestController
@@ -19,7 +22,8 @@ public class LydiaController {
     static final String NO_OFFSET_VALUE = "0";
     static final String LEDGER_TYPE_DEPOSIT = "deposit";
     static final String LEDGER_TYPE_WITHDRAWAL = "withdrawal";
-    static final String EUR_ASSET = "ZEUR";
+    static final String EUR = "EUR";
+    static final String EUR_ASSET = "Z" + EUR;
 
     private final ApiClient client;
 
@@ -32,6 +36,16 @@ public class LydiaController {
     public Object getAssetsInfo() {
 
         return this.client.getAssetsInfo();
+    }
+
+    @GetMapping(value = "/tickers")
+    public Object getTickers(@RequestParam final List<String> tickers) {
+
+        final var pairs = tickers.stream()
+                .map(ticker -> ticker + EUR)
+                .collect(toList());
+
+        return this.client.getTickers(pairs);
     }
 
     @GetMapping(value = "/account-balance")

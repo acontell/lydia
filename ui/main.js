@@ -134,6 +134,8 @@ Vue.component('trade-balance', {
             .then(withdraws => this.withdraws = withdraws)
             .then(l => retriever.tradesHistory())
             .then(tradesHistory => this.tradesHistory = tradesHistory)
+            .then(l => retriever.tickers(Object.keys(this.tradesHistory)))
+            .then(console.log)
             .catch(error => {
                 console.log(error)
                 this.errored = true

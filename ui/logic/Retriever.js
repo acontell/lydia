@@ -16,6 +16,11 @@ export default class Retriever {
         return axios.get('/api/trade-balance')
     }
 
+    tickers(tickers) {
+
+        return axios.get('/api/tickers', {params: {tickers: tickers.join(',')}})
+    }
+
     tradesHistory(offset = 0) {
 
         return getData('/api/trades-history', offset, ({data: {result: {trades, count}}}) => ({

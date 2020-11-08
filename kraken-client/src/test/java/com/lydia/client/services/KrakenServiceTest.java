@@ -59,6 +59,16 @@ class KrakenServiceTest {
     }
 
     @Test
+    void it_send_request_for_get_tickers() {
+
+        given(this.restTemplate.exchange(SAMPLE_URI, GET, SAMPLE_ENTITY, Object.class)).willReturn(this.responseEntity);
+
+        final var actual = this.krakenService.getTickers(REQUEST);
+
+        assertThat(actual).isEqualTo(EXPECTED);
+    }
+
+    @Test
     void it_send_request_for_get_account_balance() {
 
         given(this.restTemplate.exchange(SAMPLE_URI, POST, SAMPLE_ENTITY, Object.class)).willReturn(this.responseEntity);

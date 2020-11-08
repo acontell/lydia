@@ -25,6 +25,12 @@ public class KrakenService {
         return this.doExchange(request, GET);
     }
 
+    @ApiCallRateLimit(apiCallRateCost = 1)
+    public Object getTickers(final ApiRequest request) {
+
+        return this.doExchange(request, GET);
+    }
+
     private Object doExchange(final ApiRequest request, final HttpMethod method) {
 
         return this.restTemplate.exchange(request.getUri(), method, request.getEntity(), Object.class).getBody();

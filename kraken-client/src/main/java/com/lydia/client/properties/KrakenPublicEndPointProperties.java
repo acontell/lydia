@@ -10,4 +10,5 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 public class KrakenPublicEndPointProperties {
 
     String assetsInfo;
+    String tickers;
 }
