@@ -32,15 +32,15 @@ export default class Massager {
             .value();
     }
 
-    getSummary() {
+    getSummary(tradesSummary) {
 
         let a = {}
-        a.totalProfit = 0
-        a.totalFees = 0
-        a.totalInvested = 0
-        a.actualValue = 0
-        a.actualGainLoss = 0
-        a.actualGainLossPercentage = 0
+        a.totalProfit = _.reduce(tradesSummary, (acc, {sumUp: {gainsLosses}}) => acc + gainsLosses, 0)
+        a.totalFees = _.reduce(tradesSummary, (acc, {sumUp: {totalFees}}) => acc + totalFees, 0)
+        a.totalInvested = _.reduce(tradesSummary, (acc, {sumUp: {moneySpent}}) => acc + moneySpent, 0)
+        a.actualValue = _.reduce(tradesSummary, (acc, {sumUp: {currentValue}}) => acc + currentValue, 0)
+        a.actualGainLoss = _.reduce(tradesSummary, (acc, {sumUp: {gainLoss}}) => acc + gainLoss, 0)
+        a.actualGainLossPercentage = _.reduce(tradesSummary, (acc, {sumUp: {gainLossPercentage}}) => acc + gainLossPercentage, 0) / _.size(tradesSummary)
 
         return a
     }
