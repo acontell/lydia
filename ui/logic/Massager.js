@@ -34,13 +34,98 @@ export default class Massager {
 
     updateTrades(trades, tickers) {
 
-        return _.map(trades, (asset, key) => this.trade(asset, tickers[key]))
+        return _.reduce(trades, (acc, asset, key) => {
+
+            acc[key] = this.trade(asset, tickers[key])
+
+            return acc
+        }, {})
     }
 
     trade(asset, currentValue) {
 
-        console.log(asset, currentValue)
-        return _.orderBy(asset, 'time', 'asc')
+        let orderedTrades = _.sortBy(asset, 'time', 'asc')
+
+        return {
+            trades: orderedTrades,
+            sumUp: this.sumUp(orderedTrades, currentValue)
+        }
+    }
+
+    sumUp(orderedTrades, currentValue) {
+
+        let buys = []
+        let sells = []
+        let totalFees = 0
+
+        _.each(orderedTrades, trade => {
+
+            totalFees += +trade.fee
+
+            if (trade.type === 'buy') {
+
+                buys = buys.concat({
+                    amountBuy: +trade.vol,
+                    priceBuy: +trade.price
+                })
+            } else {
+
+                let totalSell = +trade.vol
+
+                _.each(buys, buy => {
+
+                    if (totalSell > 0 && buy.amountBuy > 0) {
+
+                        let amountSold
+
+                        if (totalSell > buy.amountBuy) {
+
+                            totalSell -= buy.amountBuy
+                            amountSold = buy.amountBuy
+                            buy.amountBuy = 0
+
+                        } else {
+
+                            buy.amountBuy -= totalSell
+                            amountSold = totalSell
+                            totalSell = 0
+                        }
+
+                        sells = sells.concat({
+                            amountSold: amountSold,
+                            priceBuy: buy.priceBuy,
+                            priceSold: +trade.price,
+                            gainLoss: amountSold * (+trade.price - buy.priceBuy)
+                        })
+                    }
+                });
+            }
+        });
+
+        let gainsLosses = _.reduce(sells, (acc, sell) => acc + sell.gainLoss, 0)
+
+        let actualBuys = _.filter(buys, buy => buy.amountBuy > 0)
+
+        let sumupBuys = _.reduce(actualBuys, (acc, buy) => {
+
+            return {
+                currentAmount: acc.currentAmount + buy.amountBuy,
+                pricesAdded: acc.pricesAdded + buy.priceBuy,
+                moneySpent: acc.moneySpent + (buy.amountBuy * buy.priceBuy)
+            }
+        }, {currentAmount: 0, pricesAdded: 0, moneySpent: 0})
+
+        return {
+            gainsLosses: gainsLosses,
+            currentAmount: sumupBuys.currentAmount,
+            moneySpent: sumupBuys.moneySpent,
+            averagePrice: sumupBuys.pricesAdded / _.size(actualBuys),
+            actualPrice: currentValue,
+            currentValue: sumupBuys.currentAmount * currentValue,
+            gainLoss: (sumupBuys.currentAmount * currentValue) - sumupBuys.moneySpent,
+            gainLossPercentage: (((sumupBuys.currentAmount * currentValue) - sumupBuys.moneySpent) / sumupBuys.moneySpent) * 100,
+            totalFees: totalFees
+        }
     }
 
     ledger(ledgers) {

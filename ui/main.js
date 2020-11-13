@@ -67,9 +67,11 @@ Vue.component('trade-balance', {
                 </div>
             </div>
             <div v-for="(orders, crypto) in tradesHistory">
-                <div class="card border-dark mb-3" style="max-width: 75rem;">
-                    <div class="card-header"><b>{{ crypto }}</b></div>
-                    <div class="card-body text-dark">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="card-title"><b>{{ crypto }}</b></h5>
                         <table class="table">
                           <thead>
                           <tr>
@@ -82,7 +84,7 @@ Vue.component('trade-balance', {
                            </tr>
                           </thead>
                           <tbody>
-                            <tr v-for="order in orders">
+                            <tr v-for="order in orders.trades">
                               <td v-bind:class="{ 'text-success': order.type === 'sell', 'text-danger': order.type === 'buy' }">{{ order.type | toUpperCase }}</td>
                               <td>{{ order.time | toDate }}</td>
                               <td>{{ order.vol }}</td>
@@ -91,9 +93,53 @@ Vue.component('trade-balance', {
                               <td class="text-danger">{{ order.fee | toEuros }}</td>
                             </tr>
                           </tbody>
-                        </table>                    
+                        </table>
+                      </div>
                     </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="card-title"><b>{{ crypto }}</b> - Summary</h5>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td><b>Gross Profit</b>: {{ orders.sumUp.gainsLosses | toEuros }}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Total Fees:</b> {{ orders.sumUp.totalFees | toEuros }}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Profit after Fees:</b> {{ orders.sumUp.gainsLosses - orders.sumUp.totalFees | toEuros }}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Actual Invested:</b> {{ orders.sumUp.moneySpent | toEuros }}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Volume:</b> {{ orders.sumUp.currentAmount }}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Average Price:</b> {{ orders.sumUp.averagePrice }}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Actual Price:</b> {{ orders.sumUp.actualPrice }}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Actual Value:</b> {{ orders.sumUp.currentValue | toEuros }}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Actual Gains/Losses:</b> {{ orders.sumUp.gainLoss | toEuros }}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Actual Gains/Losses Percentage:</b> {{ orders.sumUp.gainLossPercentage | toPercentage }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+                <br />
             </div>
         </div>
 
@@ -115,6 +161,10 @@ Vue.component('trade-balance', {
         toEuros(value) {
 
             return NUMBER_FORMATTER.format(value);
+        },
+        toPercentage(value) {
+
+            return (+value).toFixed(2) + " %"
         }
     },
     mounted() {
@@ -122,12 +172,12 @@ Vue.component('trade-balance', {
         let composer = new Composer();
 
         composer.compose()
-            .then(e => {
-                this.tradesHistory = e.tradesHistory
-                this.balance = e.balance
-                this.deposits = e.deposits
-                this.withdraws = e.withdraws
-                this.gainsLosses = e.gainsLosses
+            .then(sumUp => {
+                this.tradesHistory = sumUp.trades
+                this.balance = sumUp.balance
+                this.deposits = sumUp.deposits
+                this.withdraws = sumUp.withdraws
+                this.gainsLosses = sumUp.gainsLosses
             })
             .catch(error => {
                 console.log(error)

@@ -11,27 +11,33 @@ export default class Composer {
 
     compose() {
 
+        let tradeBalance
+        let tradeDeposits
+        let tradeWithdraws
+        let trades
+        let tradeTickers
+
         return this.retriever.tradeBalance()
             .then(this.massager.tradeBalance)
-            .then(balance => this.balance = balance)
+            .then(balance => tradeBalance = balance)
             .then(l => this.retriever.deposits())
             .then(this.massager.ledger)
-            .then(deposits => this.deposits = deposits)
+            .then(deposits => tradeDeposits = deposits)
             .then(l => this.retriever.withdraws())
             .then(this.massager.ledger)
-            .then(withdraws => this.withdraws = withdraws)
+            .then(withdraws => tradeWithdraws = withdraws)
             .then(l => this.retriever.tradesHistory())
             .then(this.massager.trades)
-            .then(tradesHistory => this.tradesHistory = tradesHistory)
-            .then(l => this.retriever.tickers(Object.keys(this.tradesHistory)))
+            .then(tradesHistory => trades = tradesHistory)
+            .then(l => this.retriever.tickers(Object.keys(trades)))
             .then(this.massager.tickers)
-            .then(tickers => this.tickers = tickers)
+            .then(tickers => tradeTickers = tickers)
             .then(l => ({
-                balance: this.balance,
-                deposits: this.deposits,
-                withdraws: this.withdraws,
-                tradesHistory: this.massager.updateTrades(this.tradesHistory, this.tickers),
-                gainsLosses: this.balance.eb - (this.deposits.total + this.withdraws.total)
+                balance: tradeBalance,
+                deposits: tradeDeposits,
+                withdraws: tradeWithdraws,
+                trades: this.massager.updateTrades(trades, tradeTickers),
+                gainsLosses: tradeBalance.eb - (tradeDeposits.total + tradeWithdraws.total)
             }))
     }
 }
