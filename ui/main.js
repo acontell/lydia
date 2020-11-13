@@ -38,29 +38,29 @@ Vue.component('trade-balance', {
 
         <div v-else>
             <div class="card border-dark mb-3" style="max-width: 30rem;">
-                <div class="card-header"><b>Trade Balance</b></div>
+                <div class="card-header"><b>Balance</b></div>
                 <div class="card-body text-dark">
                     <table class="table">
                       <tbody>
                         <tr>
                           <th scope="row">Total deposited:</th>
-                          <td>{{ deposits.total | currencyDecimal }}</td>
+                          <td>{{ deposits.total | toEuros }}</td>
                         </tr>
                         <tr>
                           <th scope="row">Total withdrawn:</th>
-                          <td>{{ withdraws.total | currencyDecimal }}</td>
+                          <td>{{ withdraws.total | toEuros }}</td>
                         </tr>
                         <tr>
                           <th scope="row">Currently invested:</th>
-                          <td>{{ deposits.total + withdraws.total | currencyDecimal }}</td>
+                          <td>{{ deposits.total + withdraws.total | toEuros }}</td>
                         </tr>
                         <tr>
                           <th scope="row">Currently valued:</th>
-                          <td>{{ balance.eb | currencyDecimal }}</td>
+                          <td>{{ balance.eb | toEuros }}</td>
                         </tr>
                         <tr>
                           <th scope="row">Gains/losses:</th>
-                          <td v-bind:class="gainsLossesObject">{{ gainsLosses | currencyDecimal }}</td>
+                          <td v-bind:class="gainsLossesObject">{{ gainsLosses | toEuros }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -128,10 +128,10 @@ Vue.component('trade-balance', {
                                     <td><b>Actual Value:</b> {{ orders.sumUp.currentValue | toEuros }}</td>
                                 </tr>
                                 <tr>
-                                    <td><b>Actual Gains/Losses:</b> {{ orders.sumUp.gainLoss | toEuros }}</td>
+                                    <td><b>Actual Gains/Losses:</b> <span v-bind:class="{ 'text-success': orders.sumUp.gainLoss > 0, 'text-danger': orders.sumUp.gainLoss <= 0 }">{{ orders.sumUp.gainLoss | toEuros }}</span></td>
                                 </tr>
                                 <tr>
-                                    <td><b>Actual Gains/Losses Percentage:</b> {{ orders.sumUp.gainLossPercentage | toPercentage }}</td>
+                                    <td><b>Actual Gains/Losses Percentage:</b> <span v-bind:class="{ 'text-success': orders.sumUp.gainLossPercentage > 0, 'text-danger': orders.sumUp.gainLossPercentage <= 0 }">{{ orders.sumUp.gainLossPercentage | toPercentage }}</span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -146,10 +146,6 @@ Vue.component('trade-balance', {
     </section>
     `,
     filters: {
-        currencyDecimal(value) {
-
-            return (+value).toFixed(2) + " €"
-        },
         toDate(value) {
 
             return new Date(value * 1000).toJSON().slice(0, 10).split('-').reverse().join('-')
