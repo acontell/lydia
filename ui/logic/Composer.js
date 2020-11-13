@@ -32,11 +32,13 @@ export default class Composer {
             .then(l => this.retriever.tickers(Object.keys(trades)))
             .then(this.massager.tickers)
             .then(tickers => tradeTickers = tickers)
-            .then(l => ({
+            .then(l => this.massager.tradesSummary(trades, tradeTickers))
+            .then(tradesSummary => ({
                 balance: tradeBalance,
                 deposits: tradeDeposits,
                 withdraws: tradeWithdraws,
-                trades: this.massager.updateTrades(trades, tradeTickers),
+                trades: tradesSummary,
+                summary: this.massager.getSummary(tradesSummary),
                 gainsLosses: tradeBalance.eb - (tradeDeposits.total + tradeWithdraws.total)
             }))
     }

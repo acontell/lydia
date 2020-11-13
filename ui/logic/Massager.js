@@ -32,17 +32,30 @@ export default class Massager {
             .value();
     }
 
-    updateTrades(trades, tickers) {
+    getSummary() {
+
+        let a = {}
+        a.totalProfit = 0
+        a.totalFees = 0
+        a.totalInvested = 0
+        a.actualValue = 0
+        a.actualGainLoss = 0
+        a.actualGainLossPercentage = 0
+
+        return a
+    }
+
+    tradesSummary(trades, tickers) {
 
         return _.reduce(trades, (acc, asset, key) => {
 
-            acc[key] = this.trade(asset, tickers[key])
+            acc[key] = this.tradeSummary(asset, tickers[key])
 
             return acc
         }, {})
     }
 
-    trade(asset, currentValue) {
+    tradeSummary(asset, currentValue) {
 
         let orderedTrades = _.sortBy(asset, 'time', 'asc')
 
@@ -146,3 +159,4 @@ export default class Massager {
         }, {})
     }
 }
+

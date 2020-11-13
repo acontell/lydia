@@ -11,6 +11,7 @@ Vue.component('trade-balance', {
             withdraws: null,
             tradesHistory: null,
             gainsLosses: null,
+            summary: null,
             loading: true,
             errored: false
         }
@@ -37,35 +38,72 @@ Vue.component('trade-balance', {
         </div>
 
         <div v-else>
-            <div class="card border-dark mb-3" style="max-width: 30rem;">
-                <div class="card-header"><b>Balance</b></div>
-                <div class="card-body text-dark">
-                    <table class="table">
-                      <tbody>
-                        <tr>
-                          <th scope="row">Total deposited:</th>
-                          <td>{{ deposits.total | toEuros }}</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Total withdrawn:</th>
-                          <td>{{ withdraws.total | toEuros }}</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Currently invested:</th>
-                          <td>{{ deposits.total + withdraws.total | toEuros }}</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Currently valued:</th>
-                          <td>{{ balance.eb | toEuros }}</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Gains/losses:</th>
-                          <td v-bind:class="gainsLossesObject">{{ gainsLosses | toEuros }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title"><b>Balance</b></h5>
+                        <table class="table">
+                          <tbody>
+                            <tr>
+                              <th scope="row">Total deposited:</th>
+                              <td>{{ deposits.total | toEuros }}</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Total withdrawn:</th>
+                              <td>{{ withdraws.total | toEuros }}</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Currently invested:</th>
+                              <td>{{ deposits.total + withdraws.total | toEuros }}</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Currently valued:</th>
+                              <td>{{ balance.eb | toEuros }}</td>
+                            </tr>
+                            <tr>
+                              <th scope="row">Gains/losses:</th>
+                              <td v-bind:class="gainsLossesObject">{{ gainsLosses | toEuros }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                  </div>
                 </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title"><b>Cryto's Summary</b></h5>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td><b>Total Gross Profit</b>: {{ summary.totalProfit | toEuros }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Total Fees:</b> {{ summary.totalFees | toEuros }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Total Profit after Fees:</b> {{ summary.totalProfit - summary.totalFees | toEuros }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Actual Invested:</b> {{ summary.totalInvested | toEuros }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Actual Value:</b> {{ summary.actualValue | toEuros }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Actual Gains/Losses:</b> <span v-bind:class="{ 'text-success': summary.actualGainLoss > 0, 'text-danger': summary.actualGainLoss < 0 }">{{ summary.actualGainLoss | toEuros }}</span></td>
+                            </tr>
+                            <tr>
+                                <td><b>Actual Gains/Losses Percentage:</b> <span v-bind:class="{ 'text-success': summary.actualGainLossPercentage > 0, 'text-danger': summary.actualGainLossPercentage < 0 }">{{ summary.actualGainLossPercentage | toPercentage }}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
             </div>
+            <br />
             <div v-for="(orders, crypto) in tradesHistory">
                 <div class="row">
                   <div class="col-sm-6">
@@ -174,6 +212,7 @@ Vue.component('trade-balance', {
                 this.deposits = sumUp.deposits
                 this.withdraws = sumUp.withdraws
                 this.gainsLosses = sumUp.gainsLosses
+                this.summary = sumUp.summary
             })
             .catch(error => {
                 console.log(error)
