@@ -40,7 +40,7 @@ export default class Massager {
         a.totalInvested = _.reduce(tradesSummary, (acc, {sumUp: {moneySpent}}) => acc + moneySpent, 0)
         a.actualValue = _.reduce(tradesSummary, (acc, {sumUp: {currentValue}}) => acc + currentValue, 0)
         a.actualGainLoss = _.reduce(tradesSummary, (acc, {sumUp: {gainLoss}}) => acc + gainLoss, 0)
-        a.actualGainLossPercentage = _.reduce(tradesSummary, (acc, {sumUp: {gainLossPercentage}}) => acc + gainLossPercentage, 0) / _.size(tradesSummary)
+        a.actualGainLossPercentage = ((a.actualValue - a.totalInvested) / a.totalInvested) * 100
 
         return a
     }
