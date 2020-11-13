@@ -10,6 +10,7 @@ Vue.component('trade-balance', {
             deposits: null,
             withdraws: null,
             tradesHistory: null,
+            gainsLosses: null,
             loading: true,
             errored: false
         }
@@ -18,15 +19,9 @@ Vue.component('trade-balance', {
         gainsLossesObject() {
 
             return {
-                'text-success': (this.balance.eb - (this.deposits.total + this.withdraws.total)) > 0,
-                'text-danger': (this.balance.eb - (this.deposits.total + this.withdraws.total)) < 0
+                'text-success': this.gainsLosses > 0,
+                'text-danger': this.gainsLosses < 0
             }
-        }
-    },
-    methods: {
-        sortOrdersAsc(orders) {
-
-            return _.orderBy(orders, 'time', 'asc');
         }
     },
     template: `
@@ -65,7 +60,7 @@ Vue.component('trade-balance', {
                         </tr>
                         <tr>
                           <th scope="row">Gains/losses:</th>
-                          <td v-bind:class="gainsLossesObject">{{ balance.eb - (deposits.total + withdraws.total) | currencyDecimal }}</td>
+                          <td v-bind:class="gainsLossesObject">{{ gainsLosses | currencyDecimal }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -87,7 +82,7 @@ Vue.component('trade-balance', {
                            </tr>
                           </thead>
                           <tbody>
-                            <tr v-for="order in sortOrdersAsc(orders)">
+                            <tr v-for="order in orders">
                               <td v-bind:class="{ 'text-success': order.type === 'sell', 'text-danger': order.type === 'buy' }">{{ order.type | toUpperCase }}</td>
                               <td>{{ order.time | toDate }}</td>
                               <td>{{ order.vol }}</td>
@@ -128,11 +123,11 @@ Vue.component('trade-balance', {
 
         composer.compose()
             .then(e => {
-                console.log(e)
                 this.tradesHistory = e.tradesHistory
                 this.balance = e.balance
                 this.deposits = e.deposits
                 this.withdraws = e.withdraws
+                this.gainsLosses = e.gainsLosses
             })
             .catch(error => {
                 console.log(error)
